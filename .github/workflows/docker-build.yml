@@ -6,6 +6,10 @@ on:
       - main
   pull_request:
  
+permissions:
+  contents: read
+  packages: write
+ 
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,23 +19,19 @@ jobs:
         app: [python-app, node-app, java-app]
  
     steps:
-      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
  
-      # 2. Set Docker image name (lowercase)
       - name: Set Docker image name
         run: |
           IMAGE_NAME=$(echo "${GITHUB_ACTOR}" | tr '[:upper:]' '[:lower:]')/microservices-ci/${{ matrix.app }}
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
  
-      # 3. Set up Docker Buildx (REQUIRED for cache)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
         with:
           driver: docker-container
  
-      # 4. Log in to GitHub Container Registry
       - name: Log in to GHCR
         uses: docker/login-action@v2
         with:
@@ -39,7 +39,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
  
-      # 5. Build and push Docker image
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:

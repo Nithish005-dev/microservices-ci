@@ -47,7 +47,7 @@ jobs:
             **/.m2/repository
             **/node_modules
             **/venv
-          key: ${{ runner.os }}-deps-${{ matrix.service }}-${{ hashFiles(matrix.path + '/**') }}
+          key: ${{ runner.os }}-deps-${{ matrix.service }}-$(( hashFiles(matrix.path + '/**') }}
           restore-keys: |
             ${{ runner.os }}-deps-${{ matrix.service }}-
  
